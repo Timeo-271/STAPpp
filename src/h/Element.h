@@ -67,15 +67,15 @@ public:
     {
         unsigned int i = 0;
         for (unsigned int N = 0; N < NEN_; N++)
-            for (unsigned int D = 0; D < CNode::NDF; D++)
-                LocationMatrix_[i++] = nodes_[N]->bcode[D];
+            for (unsigned int D = 0; D < nodes_[N]->NDF_; D++)
+                LocationMatrix_[i++] = nodes_[N]->bcode_[D];
     }
 
 //! Return the size of the element stiffness matrix (stored as an array column by column)
     virtual unsigned int SizeOfStiffnessMatrix()
     {
         unsigned int size = 0;
-        for (int i=1; i<= ND_; i++)
+        for (unsigned int i=1; i<= ND_; i++)
             size += i;
         
         return size;

@@ -260,7 +260,7 @@ void CSkylineMatrix<T_>::Assembly(double* Matrix, unsigned int* LocationMatrix, 
             (*this)(Li,Lj) += Matrix[DiagjElement + j - i];
         }
     }
-    
+    //std::cout<<(*this)(1,1)<<(*this)(1,2)<<(*this)(1,3)<<(*this)(1,4)<<endl;
     return;
 }
 

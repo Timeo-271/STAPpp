@@ -52,3 +52,32 @@ public:
 //!	Write material data to Stream
 	virtual void Write(COutputter& output);
 };
+
+//! Material class for 2D plate element
+class C2DMaterial : public CMaterial
+{
+public:
+
+	double mu, thickness;	//!< Poisson ratio, Thickness
+
+	bool plane_stress;	//!< Plane stress = True, Plane strain = False 
+
+	double* D;
+
+	double Area;
+
+public:
+
+	C2DMaterial(): D(nullptr){}
+
+	~C2DMaterial(){
+		if(D)
+			delete[] D;
+	}
+
+//! Read material data from stream Input
+	virtual bool Read(ifstream& Input);
+
+//! Write material data to Stream
+	virtual void Write(COutputter& output);
+};

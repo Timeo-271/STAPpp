@@ -8,6 +8,7 @@
 /*     http://www.comdyn.cn/                                                 */
 /*****************************************************************************/
 
+
 #include "Bar.h"
 
 #include <iostream>
@@ -20,15 +21,15 @@ using namespace std;
 CBar::CBar()
 {
 	NEN_ = 2;	// Each element has 2 nodes
-	nodes_ = new CNode*[NEN_];
+	nodes_ = new CNode*[NEN_]; 
     
     ND_ = 6;
-    LocationMatrix_ = new unsigned int[ND_];
+    LocationMatrix_ = new unsigned int[ND_]; //n of Matrix
 
 	ElementMaterial_ = nullptr;
 }
 
-//	Desconstructor
+//	Desconstructor 
 CBar::~CBar()
 {
 }
@@ -37,11 +38,11 @@ CBar::~CBar()
 bool CBar::Read(ifstream& Input, CMaterial* MaterialSets, CNode* NodeList)
 {
 	unsigned int MSet;	// Material property set number
-	unsigned int N1, N2;	// Left node number and right node number
+	unsigned int N1, N2;	// Left node number and right node number 
 
 	Input >> N1 >> N2 >> MSet;
-    ElementMaterial_ = dynamic_cast<CBarMaterial*>(MaterialSets) + MSet - 1;
-	nodes_[0] = &NodeList[N1 - 1];
+    ElementMaterial_ = dynamic_cast<CBarMaterial*>(MaterialSets) + MSet - 1; 
+	nodes_[0] = &NodeList[N1 - 1]; //left
 	nodes_[1] = &NodeList[N2 - 1];
 
 	return true;
@@ -62,7 +63,9 @@ void CBar::ElementStiffness(double* Matrix)
 
 //	Calculate bar length
 	double DX[3];		//	dx = x2-x1, dy = y2-y1, dz = z2-z1
-	for (unsigned int i = 0; i < 3; i++)
+	
+	// length
+	for (int i = 0; i < 3; i++)
 		DX[i] = nodes_[1]->XYZ[i] - nodes_[0]->XYZ[i];
 
 	double DX2[6];	//  Quadratic polynomial (dx^2, dy^2, dz^2, dx*dy, dy*dz, dx*dz)
@@ -107,13 +110,13 @@ void CBar::ElementStiffness(double* Matrix)
 
 //	Calculate element stress 
 void CBar::ElementStress(double* stress, double* Displacement)
-{
+{ //force and dis
 	CBarMaterial* material_ = dynamic_cast<CBarMaterial*>(ElementMaterial_);	// Pointer to material of the element
 
 	double DX[3];	//	dx = x2-x1, dy = y2-y1, dz = z2-z1
-	double L2 = 0;	//	Square of bar length (L^2)
+	double L2 = 0;	//	Square of bar length
 
-	for (unsigned int i = 0; i < 3; i++)
+	for (unsigned int i = 0; i < 3; i++) //square length
 	{
 		DX[i] = nodes_[1]->XYZ[i] - nodes_[0]->XYZ[i];
 		L2 = L2 + DX[i]*DX[i];
@@ -124,12 +127,12 @@ void CBar::ElementStress(double* stress, double* Displacement)
 	{
 		S[i] = -DX[i] * material_->E / L2;
 		S[i+3] = -S[i];
-	}
+	} //element stress
 	
 	*stress = 0.0;
 	for (unsigned int i = 0; i < 6; i++)
 	{
 		if (LocationMatrix_[i])
 			*stress += S[i] * Displacement[LocationMatrix_[i]-1];
-	}
+	} //nodal force
 }

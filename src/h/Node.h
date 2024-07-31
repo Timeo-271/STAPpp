@@ -12,6 +12,8 @@
 
 #include "Outputter.h"
 
+class CElementGroup;
+
 using namespace std;
 
 //!	Node class
@@ -21,23 +23,32 @@ public:
 
 //!	Maximum number of degrees of freedom per node
 /*!	For 3D bar and solid elements, NDF = 3. For 3D beam or shell elements, NDF = 5 or 6 */
-	const static unsigned int NDF = 3;
+	unsigned int NDF_;
 
 //!	Node numer
 	unsigned int NodeNumber;
 
 //!	x, y and z coordinates of the node
-	double XYZ[3];
+	double* XYZ;
+
+	double* BODY;
 
 //!	Boundary code of each degree of freedom of the node
 /*!		0: The corresponding degree of freedom is active (defined in the global system) */
 /*!		1: The corresponding degree of freedom in nonactive (not defined) */
 /*!	After call Domain::CalculateEquationNumber(), bcode stores the global equation number */
 /*!	corresponding to each degree of freedom of the node */
-	unsigned int bcode[NDF];
+	unsigned int* bcode_;
 
 //!	Constructor
-	CNode(double X = 0, double Y = 0, double Z = 0);
+	CNode(): NodeNumber(0),NDF_(3), XYZ(new double[3]), bcode_(new unsigned int[3]), BODY(new double[3]) 
+	{for (int i = 0; i < 3; ++i) {
+        XYZ[i] = 0.0;
+        bcode_[i] = 0;
+        BODY[i] = 0;}}
+
+// !Desconstructor
+	~CNode();
 
 //!	Read nodal point data from stream Input
 	bool Read(ifstream& Input);

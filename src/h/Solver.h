@@ -29,4 +29,5 @@ public:
 
 //!	Reduce right-hand-side load vector and back substitute
 	void BackSubstitution(double* Force); 
+
 };
